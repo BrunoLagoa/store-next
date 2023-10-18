@@ -4,6 +4,8 @@
 
 @layer base {
   :root {
+    font-size: 62.5%; /* 1rem = 10px */
+
     --background: 0 0% 4%;
     --foreground: 0 0% 100%;
 
@@ -39,9 +41,12 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   body {
-    @apply bg-background text-foreground h-full;
+    @apply h-full bg-background text-foreground;
+    font-size: 1.6rem;
   }
   html {
     @apply h-full;
