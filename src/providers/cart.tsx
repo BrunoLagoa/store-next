@@ -13,6 +13,7 @@ type CartContextData = {
   cartBasePrice: number;
   cartTotalDiscount: number;
   addProductToCart: (product: CartProduct) => void;
+  decreaseProductQuantity: (productId: string) => void;
 };
 
 const initialCartContextData: CartContextData = {
@@ -21,6 +22,7 @@ const initialCartContextData: CartContextData = {
   cartBasePrice: 0,
   cartTotalDiscount: 0,
   addProductToCart: () => {},
+  decreaseProductQuantity: () => {},
 };
 
 export const CartContext = createContext<CartContextData>(
@@ -53,12 +55,30 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setProducts((prev) => [...prev, product]);
   };
 
+  const decreaseProductQuantity = (productId: string) => {
+    setProducts((prev) =>
+      prev
+        .map((cartProduct) => {
+          if (cartProduct.id === productId) {
+            return {
+              ...cartProduct,
+              quantity: cartProduct.quantity - 1,
+            };
+          }
+
+          return cartProduct;
+        })
+        .filter((cartProduct) => cartProduct.quantity > 0),
+    );
+  };
+
   return (
     <CartContext.Provider
       value={{
         ...initialCartContextData,
         products,
         addProductToCart,
+        decreaseProductQuantity,
       }}
     >
       {children}
