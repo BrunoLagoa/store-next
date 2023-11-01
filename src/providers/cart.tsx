@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductWithTotalPrice } from "@/helpers/product";
-import { ReactNode, createContext, useMemo, useState } from "react";
+import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
 
 export type CartProduct = ProductWithTotalPrice & {
   quantity: number;
@@ -40,21 +40,27 @@ export const CartContext = createContext<CartContextData>(
 );
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<CartProduct[]>([]);
+  const [products, setProducts] = useState<CartProduct[]>(
+    JSON.parse(localStorage.getItem("@store-next/cart-products") || "[]"),
+  );
 
- const subTotal = useMemo(() => {
-  return products.reduce((acc, product) => {
-    return acc + Number(product.basePrice) * product.quantity;
-  }, 0);
- }, [products]);
+  useEffect(() => {
+    localStorage.setItem("@store-next/cart-products", JSON.stringify(products));
+  }, [products]);
 
- const total = useMemo(() => {
-  return products.reduce((acc, product) => {
-    return acc + Number(product.totalPrice) * product.quantity ;
-  }, 0);
- }, [products]);
+  const subTotal = useMemo(() => {
+    return products.reduce((acc, product) => {
+      return acc + Number(product.basePrice) * product.quantity;
+    }, 0);
+  }, [products]);
 
- const totalDiscount = total - subTotal;
+  const total = useMemo(() => {
+    return products.reduce((acc, product) => {
+      return acc + Number(product.totalPrice) * product.quantity;
+    }, 0);
+  }, [products]);
+
+  const totalDiscount = total - subTotal;
 
   const addProductToCart = (product: CartProduct) => {
     const productIsAlreadyOnCart = products.some(
