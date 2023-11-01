@@ -45,7 +45,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    localStorage.setItem("@store-next/cart-products", JSON.stringify(products));
+    typeof window !== "undefined" &&
+      localStorage.setItem(
+        "@store-next/cart-products",
+        JSON.stringify(products),
+      );
   }, [products]);
 
   const subTotal = useMemo(() => {
